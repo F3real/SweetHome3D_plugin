@@ -1,5 +1,9 @@
 package com.eteks.sweethome3d.plugin;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 import com.eteks.sweethome3d.model.HomePieceOfFurniture;
@@ -61,10 +65,31 @@ public class FirstPlugin extends Plugin {
 
 		private int countNumberOfRoomItems(Room r, String itemName) {
 			int res = 0;
+			getPointsOfRoomItems(r, itemName);
 			for (Selectable piece : getHome().getSelectableViewableItems()) {
 				if (HomePieceOfFurniture.class.equals(piece.getClass())) {
 					if (itemName.equals(((PieceOfFurniture) piece).getName()) && isItemContained(r, piece)) {
 						res += 1;
+					}
+				}
+			}
+			return res;
+		}
+
+		// Get central coordinates of selected items
+		private List<Point> getPointsOfRoomItems(Room r, String itemName) {
+			List<Point> res = new ArrayList<Point>();
+			for (Selectable piece : getHome().getSelectableViewableItems()) {
+				if (HomePieceOfFurniture.class.equals(piece.getClass())) {
+					if (itemName.equals(((PieceOfFurniture) piece).getName()) && isItemContained(r, piece)) {
+						int x = 0;
+						int y = 0;
+						float[][] points = piece.getPoints();
+						for (int i = 0; i < points.length; i++) {
+							x += points[i][0];
+							y += points[i][1];
+						}
+						res.add(new Point(x / points.length, y / points.length));
 					}
 				}
 			}
